@@ -95,7 +95,6 @@ class HillClimbing:
                 # )  / k/h
                 # f += Point.sqrt_distance(self.cloud[idx], self.cloud[self.neighbors[idx][idx_j]])
                 # self.density.append(math.sqrt( k /f))
-
                 f +=  Point.sqrt_distance(self.cloud[idx], self.cloud[self.neighbors[idx][idx_j]]) ** 2
             f = 1 / math.sqrt(f / k) # inverse of the average of the square root
             self.density.append(f)
