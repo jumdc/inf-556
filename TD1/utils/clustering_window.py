@@ -23,7 +23,7 @@ class ClusteringWindow:
             self.y_max = y + self.thickness
         
 
-    def cluster(self, cloud, labels, neighbors=[], k=1):
+    def cluster(self, cloud, labels, neighbors=[], k=1, suffix=""):
         """
         Compute the clusters of the points and store them in the label attribute.
 
@@ -63,5 +63,4 @@ class ClusteringWindow:
                     color="grey",
                     linewidth=0.1,
                 )
-       
-        plt.savefig("TD1/res.png")
+        plt.savefig(f"TD1/res_{suffix}.png")

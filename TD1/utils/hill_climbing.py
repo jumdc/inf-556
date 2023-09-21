@@ -75,7 +75,6 @@ class HillClimbing:
             neighbors.sort(key=lambda x: distances[x])
             k_p = min(k, len(neighbors) - 1)
             self.neighbors.append(neighbors[1:k_p+1]) # start at one to exclude the point itself
-            # print(f"the neighbors of {point} are {neighbors[1:k_p+1]}")
 
     def compute_density(self, k, h=1) -> None:
         """
@@ -131,12 +130,37 @@ class HillClimbing:
                 p = self.parent[p]
             self.label.append(p)
 
-            
-
     def compute_persistence(self, k, tau):
         """
         Sorts the data points by decreasing estimated density values, 
         then computes the 0-dimensional persistence of the superlevel sets of the density estimator 
         via a union-find on the k-NN graph
         """
-        pass
+        pers = set()
+        fusion = [False] * len(self.cloud)
+
+        # sort the points by decreasing order of density
+        P = list(range(len(self.cloud)))
+        P.sort(key=lambda i: self.density[i], reverse=True)
+
+        # go through the points in decreasing order of density
+        for i in range(len(P)):
+            p = P[i]  # p = racine de l'arbre du point P[i]
+            while p != self.parent[p]:
+                p = self.parent[p]
+            for j in range(k):  # iteration sur les neighbors de P[i]
+                q = self.neighbors[P[i]][j]  # q = racine de l'arbre du j-eme voisin de P[i]
+                while q != self.parent[q]:
+                    q = self.parent[q]
+                if q != p:  # potential merge
+                    m = (p 
+                         if self.density[p] < self.density[q] 
+                         else q)
+                    M = p + q - m
+                    if self.density[m] < self.density[P[i]] + tau:  # fusion effective
+                        self.parent[m] = M
+                    else:  # fusion annulee
+                        if not fusion[m]:
+                            pers.add(self.density[m] - self.density[P[i]])
+                            fusion[m] = True
+        return pers
