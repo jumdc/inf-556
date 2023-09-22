@@ -1,3 +1,5 @@
+"""Implementation of the ClusteringWindow class."""
+
 import math
 from random import random, seed
 from matplotlib import pyplot as plt
@@ -74,3 +76,5 @@ class ClusteringWindow:
                     linewidth=0.1,
                 )
         plt.savefig(f"{prefix}_res_{suffix}.png")
+        plt.close()
+        

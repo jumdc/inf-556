@@ -1,3 +1,5 @@
+"""Implementation of the Point class."""
+
 import math
 
 class Point:
@@ -9,7 +11,7 @@ class Point:
     coords : Tuple
         coordinates of a point
     """
-    def __init__(self, coords=[]) -> None:
+    def __init__(self, coords=None) -> None:
         self.coords = coords
     
     def __str__(self) -> str:
@@ -20,7 +22,7 @@ class Point:
         return f"{res} {str(self.coords[-1])})"
     
     @staticmethod
-    def sqrt_distance(a, b):
+    def sqrt_distance(point_a, point_b):
         """
         Computes the square distance between two points
         
@@ -35,10 +37,10 @@ class Point:
         -------
         float
         """
-        d = 0
-        for i in range(len(a.coords)):
-            d += (a.coords[i] - b.coords[i]) ** 2
-        return math.sqrt(d)
+        distance = 0
+        for i in range(len(point_a.coords)):
+            distance += (point_a.coords[i] - point_b.coords[i]) ** 2
+        return math.sqrt(distance)
     
     # def scanner():
     # implicit implementation in the HillClimbing class
