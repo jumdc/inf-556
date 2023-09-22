@@ -3,6 +3,9 @@ from random import random, seed
 from matplotlib import pyplot as plt
 
 class ClusteringWindow:
+    """
+    Class to display the clustering of the points.
+    """
     def __init__(self, thickness = 0.5) -> None:
         self.x_max, self.x_min = - math.inf, math.inf
         self.y_max, self.y_min = - math.inf, math.inf
@@ -11,7 +14,14 @@ class ClusteringWindow:
     
     def update(self, x, y):
         """
-        Updates the coordinates to get a centered plot.
+        Updates the max/min coordinates to get a centered plot.
+
+        Parameters
+        ----------
+        x : float
+            x coordinate of the point
+        y : float
+            y coordinate of the point
         """
         if x < self.x_min:
             self.x_min = x - self.thickness
@@ -23,9 +33,9 @@ class ClusteringWindow:
             self.y_max = y + self.thickness
         
 
-    def cluster(self, cloud, labels, neighbors=[], k=1, suffix=""):
+    def cluster(self, cloud, labels, neighbors=[], k=1, prefix="", suffix=""):
         """
-        Compute the clusters of the points and store them in the label attribute.
+        Creates a plot of the clusters, and saves it. 
 
         Parameters
         ----------
@@ -63,4 +73,4 @@ class ClusteringWindow:
                     color="grey",
                     linewidth=0.1,
                 )
-        plt.savefig(f"TD1/res_{suffix}.png")
+        plt.savefig(f"{prefix}_res_{suffix}.png")

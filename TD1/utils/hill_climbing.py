@@ -23,15 +23,12 @@ class HillClimbing:
     
     """
     def __init__(self, file) -> None:
-        self.cloud = []
-        self.neighbors = []
-        self.density = []
-        self.parent = []
-        self.label = []
+        self.cloud, self.neighbors, self.density = [], [], []
+        self.parent, self.label = [], []
         self.read_data(file)
 
-
     def __str__(self) -> str:
+        """Str overload"""
         res = "Cloud: "
         for i in self.cloud[:-1]:
             res += str(i) + ", "
@@ -76,7 +73,7 @@ class HillClimbing:
             k_p = min(k, len(neighbors) - 1)
             self.neighbors.append(neighbors[1:k_p+1]) # start at one to exclude the point itself
 
-    def compute_density(self, k, h=1) -> None:
+    def compute_density(self, k) -> None:
         """
         Compute the density of each point and store it in the density attribute.
 
@@ -88,13 +85,6 @@ class HillClimbing:
         for idx in range(len(self.cloud)):
             f = 0
             for idx_j in range(0, k):
-                # f += math.exp(
-                #     -Point.sqrt_distance(self.cloud[idx], 
-                #                          self.cloud[self.neighbors[idx][idx_j]]
-                #                          ) /(h **2)
-                # )  / k/h
-                # f += Point.sqrt_distance(self.cloud[idx], self.cloud[self.neighbors[idx][idx_j]])
-                # self.density.append(math.sqrt( k /f))
                 f +=  Point.sqrt_distance(self.cloud[idx], self.cloud[self.neighbors[idx][idx_j]]) ** 2
             f = 1 / math.sqrt(f / k) # inverse of the average of the square root
             self.density.append(f)
@@ -134,6 +124,13 @@ class HillClimbing:
         Sorts the data points by decreasing estimated density values, 
         then computes the 0-dimensional persistence of the superlevel sets of the density estimator 
         via a union-find on the k-NN graph
+
+        Parameters
+        ----------
+        k: int
+            number of neighbors to consider
+        tau: float
+            threshold for the persistence
         """
         pers = set()
         fusion = [False] * len(self.cloud)
