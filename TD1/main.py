@@ -50,18 +50,18 @@ if __name__ == "__main__":
     tau = 0.35
     main(path, k_density, k_graph, tau, prefix="test")
 
-    # logger_console.info("File crater.xy")
-    # path = "TD1/data/crater.xy"
-    # k_density = 50
-    # k_graph = 15
-    # tau = 2
-    # main(path, k_density, k_graph, tau, prefix="crater")
+    logger_console.info("File crater.xy")
+    path = "TD1/data/crater.xy"
+    k_density = 50
+    k_graph = 15
+    tau = 2
+    main(path, k_density, k_graph, tau, prefix="crater")
 
-    # logger_console.info("File crater.xy")
-    # path = "TD1/data/spirals.xy"
-    # k_density = 100
-    # k_graph = 30
-    # tau = 0.03
-    # main(path, k_density, k_graph, tau, prefix="spirals")
+    logger_console.info("File crater.xy")
+    path = "TD1/data/spirals.xy"
+    k_density = 100
+    k_graph = 30
+    tau = 0.03
+    main(path, k_density, k_graph, tau, prefix="spirals")
 
 

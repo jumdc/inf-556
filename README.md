@@ -10,3 +10,8 @@ together with its variant ToMATo based on topological persistence.
 
 [ToMATo: Topological Mode Analysis Tool](https://geometrica.saclay.inria.fr/team/Steve.Oudot/papers/cgos-pbc-09/cgos-pbcrm-11.pdf)
 
+### prerequisites
+
+```bash
+pip install -r requirements.txt
+```
