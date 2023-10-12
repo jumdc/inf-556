@@ -30,11 +30,12 @@ class ComputePersistence:
         with open(path, 'r') as file:
             lines = file.read().split('\n')
         for line in lines:
-            filtration.append(
-                Simplex(
-                    val=float(line.split(' ')[0]),
-                    dim=int(line.split(' ')[1]),
-                    vertices=list(map(int, line.split(' ')[2:]))))
+            if line != '':
+                filtration.append(
+                    Simplex(
+                        val=float(line.split(' ')[0]),
+                        dim=int(line.split(' ')[1]),
+                        vertices=list(map(int, line.split(' ')[2:]))))
         filtration.sort(key=lambda x: x.val)
         return filtration
     
@@ -86,17 +87,16 @@ class ComputePersistence:
                 for i in range(reduced.shape[1])]
             same_pivot = (low_j.index(low) if low in low_j else False)
             while (same_pivot
-                   and same_pivot < column):  # issue here. 
+                   and same_pivot < column):
+                # attn we are in Z/2Z
                 reduced[:,column] = [
                     (reduced[i,column] - reduced[i,same_pivot]) % 2
-                    for i in range(reduced.shape[0])
-                ]
+                    for i in range(reduced.shape[0])]
                 low = self.compute_low(reduced, column)
-                # attn we are in Z/2Z
+
                 low_j = [
                     self.compute_low(reduced, i) if i != column  else 0
-                    for i in range(reduced.shape[1])
-                ]
+                    for i in range(reduced.shape[1])]
                 same_pivot = (low_j.index(low) if low in low_j else False)
         return reduced
     
@@ -128,7 +128,6 @@ class ComputePersistence:
             [interval[2] for interval in barcode if interval[2] != "inf"]
         )
         infinity = (max_death - min_birth) * inf_delta + max_death
-        print(infinity)
         x = [bar[1] for bar in barcode]
         y = [(bar[2] - bar[1]) if bar[2] != "inf" else (infinity - bar[1]) for bar in barcode]
         c = [colormap[bar[0]] for bar in barcode]
