@@ -122,7 +122,7 @@ class SparseComputePersistence:
         return sorted(barcode, key =lambda x : x[0])
     
     @staticmethod
-    def plot_barcode(barcode, inf_delta=0.1):
+    def plot_barcode(barcode, inf_delta=0.1, name=""):
         plt.rc("text", usetex=True)
         plt.rc("font", family="serif")
         fig, axes = plt.subplots(1, 1)
@@ -137,4 +137,4 @@ class SparseComputePersistence:
         y = [(bar[2] - bar[1]) if bar[2] != "inf" else (infinity - bar[1]) for bar in barcode]
         c = [colormap[bar[0]] for bar in barcode]
         axes.barh(range(len(x)), y, left=x, alpha=0.5, color=c, linewidth=0)
-        plt.savefig("barcode.png")
+        plt.savefig(f"{name}_barcode.png")

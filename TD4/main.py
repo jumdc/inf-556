@@ -36,6 +36,15 @@ if __name__ == "__main__":
     # for bar in barcode: 
     #     print(bar)
 
+    persistence = SparseComputePersistence("TD4/data/filtration.xy")
+    logger_console.info("Computing boundary")
+    persistence.compute_boundary()
+    logger_console.info("Gaussian elimination")
+    reduced = persistence.gaussian_elimination()
+    logger_console.info("Output the barcode")
+    barcode = persistence.barcode_output(reduced)
+    persistence.plot_barcode(barcode, "toy")
+
     # Sparse version
     persistence = SparseComputePersistence("TD4/data/filtrations/filtration_A.txt")
     logger_console.info("Computing boundary")
@@ -44,4 +53,31 @@ if __name__ == "__main__":
     reduced = persistence.gaussian_elimination()
     logger_console.info("Output the barcode")
     barcode = persistence.barcode_output(reduced)
-    persistence.plot_barcode(barcode)
+    persistence.plot_barcode(barcode, "A")
+
+    persistence = SparseComputePersistence("TD4/data/filtrations/filtration_B.txt")
+    logger_console.info("Computing boundary")
+    persistence.compute_boundary()
+    logger_console.info("Gaussian elimination")
+    reduced = persistence.gaussian_elimination()
+    logger_console.info("Output the barcode")
+    barcode = persistence.barcode_output(reduced)
+    persistence.plot_barcode(barcode, "B")
+
+    persistence = SparseComputePersistence("TD4/data/filtrations/filtration_B.txt")
+    logger_console.info("Computing boundary")
+    persistence.compute_boundary()
+    logger_console.info("Gaussian elimination")
+    reduced = persistence.gaussian_elimination()
+    logger_console.info("Output the barcode")
+    barcode = persistence.barcode_output(reduced)
+    persistence.plot_barcode(barcode, "C")
+
+    persistence = SparseComputePersistence("TD4/data/filtrations/filtration_D.txt")
+    logger_console.info("Computing boundary")
+    persistence.compute_boundary()
+    logger_console.info("Gaussian elimination")
+    reduced = persistence.gaussian_elimination()
+    logger_console.info("Output the barcode")
+    barcode = persistence.barcode_output(reduced)
+    persistence.plot_barcode(barcode, "D")
