@@ -46,7 +46,7 @@ if __name__ == "__main__":
     persistence.plot_barcode(barcode, "toy")
 
     # Sparse version
-    persistence = SparseComputePersistence("TD4/data/filtrations/filtration_A.txt")
+    persistence = SparseComputePersistence("TD4/data/filtration_A.txt")
     logger_console.info("Computing boundary")
     persistence.compute_boundary()
     logger_console.info("Gaussian elimination")
@@ -55,7 +55,7 @@ if __name__ == "__main__":
     barcode = persistence.barcode_output(reduced)
     persistence.plot_barcode(barcode, "A")
 
-    persistence = SparseComputePersistence("TD4/data/filtrations/filtration_B.txt")
+    persistence = SparseComputePersistence("TD4/data/filtration_B.txt")
     logger_console.info("Computing boundary")
     persistence.compute_boundary()
     logger_console.info("Gaussian elimination")
@@ -64,7 +64,7 @@ if __name__ == "__main__":
     barcode = persistence.barcode_output(reduced)
     persistence.plot_barcode(barcode, "B")
 
-    persistence = SparseComputePersistence("TD4/data/filtrations/filtration_B.txt")
+    persistence = SparseComputePersistence("TD4/data/filtration_B.txt")
     logger_console.info("Computing boundary")
     persistence.compute_boundary()
     logger_console.info("Gaussian elimination")
