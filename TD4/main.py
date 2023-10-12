@@ -19,3 +19,4 @@ if __name__ == "__main__":
     barcode = persistence.barcode_output(reduced)
     for bar in barcode: 
         print(bar)
+    persistence.plot_barcode(barcode)
