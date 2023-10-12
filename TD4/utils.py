@@ -62,7 +62,7 @@ class ComputePersistence:
     def compute_boundary(self):
         """returns the boundary of a simplex"""
         self.boundary_matrix = np.zeros((len(self.filtration), len(self.filtration)))
-        for i, face in enumerate(self.filtration[:20000]):
+        for i, face in enumerate(self.filtration):
             # create labels for the rows and columns. 
             boundaries = self._get_boundary(face)
             self.boundary_matrix[boundaries, i] = 1

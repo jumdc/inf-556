@@ -14,6 +14,7 @@ root = pyrootutils.setup_root(
 )
 
 from TD4.utils import ComputePersistence
+from TD4.utils_sparse import SparseComputePersistence
 
 logging.basicConfig(
     format="%(asctime)s -  %(message)s",
@@ -22,13 +23,25 @@ logging.basicConfig(
 logger_console = logging.getLogger(__name__)
 
 if __name__ == "__main__":
-    persistence = ComputePersistence("TD4/data/filtrations/filtration_B.txt")
+    # Non sparse version
+    # persistence = ComputePersistence("TD4/data/filtration.xy")
+    # print(len(persistence.filtration))
+    # logger_console.info("Computing boundary")
+    # persistence.compute_boundary()
+    # print(persistence.boundary_matrix)
+    # logger_console.info("Gaussian elimination")
+    # reduced = persistence.gaussian_elimination()
+    # logger_console.info("Output the barcode")
+    # barcode = persistence.barcode_output(reduced)
+    # for bar in barcode: 
+    #     print(bar)
+
+    # Sparse version
+    persistence = SparseComputePersistence("TD4/data/filtrations/filtration_A.txt")
     logger_console.info("Computing boundary")
     persistence.compute_boundary()
     logger_console.info("Gaussian elimination")
     reduced = persistence.gaussian_elimination()
     logger_console.info("Output the barcode")
     barcode = persistence.barcode_output(reduced)
-    for bar in barcode: 
-        print(bar)
     persistence.plot_barcode(barcode)
