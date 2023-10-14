@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from collections import OrderedDict
 from copy import deepcopy
+from tqdm import tqdm
 
 class Simplex:
     def __init__(self, val, dim, vertices) -> None:
@@ -19,12 +19,12 @@ class Simplex:
         return self.__str__()
     
 
-
 class SparseComputePersistence:
     def __init__(self, path) -> None:
         self.filtration = SparseComputePersistence.read_file(path)
         self.boundary_matrix = None
         self.number_of_simplices = len(self.filtration)
+        self.compute_chains()
 
     @staticmethod
     def read_file(path):
@@ -42,39 +42,44 @@ class SparseComputePersistence:
         filtration.sort(key=lambda x: x.val)
         return filtration
     
-    def _get_boundary(self, face):
-        """
-        Returns the boundary of a simplex
+    def compute_chains(self):
+        """computes the chains of the filtration"""
+        self.chains = {}
+        for i, s in enumerate(self.filtration):
+            if s.dim not in self.chains.keys():
+                self.chains[s.dim] = [(i,s)]
+            else : 
+                self.chains[s.dim].append((i,s))
+        return True
+    
         
-        NB : 
-        the boundary of the k-simplex is the simplex of dimension k-1
-        the boundary of a vertex is the empty set
-        the boundary of an edge is the set of its vertices
-        the boundary of a triangle is the set of its edges ..
-
-        Returns the indices of the simplex in the filtration.
-        """
-        res = []
-        if face.dim > 0:
-            dim_chain = face.dim - 1
-            chains = [(i, s) for i, s in enumerate(self.filtration) if s.dim == dim_chain]
-            for chain in chains:
-                if all([True if v in face.vertices else False for v in chain[1].vertices]):
-                    res.append(chain[0])
-        return res
-
     def compute_boundary(self):
-        """returns the boundary of a simplex"""
-        # self.boundary_matrix = np.zeros((len(self.filtration), len(self.filtration)))
+        """computes the boundary of the filtration"""
         self.boundary_matrix = [[] for _ in range(self.number_of_simplices)]
-        for i, face in enumerate(self.filtration):
-            # create labels for the rows and columns. 
-            boundaries = self._get_boundary(face)
+        for i in tqdm(range(self.number_of_simplices)):
+        # for i, face in enumerate(self.filtration): # attn : O(n^2) here
+            face = self.filtration[i]
+            boundaries = []
+            if face.dim > 0:
+                dim_chain = face.dim - 1
+                for chain in self.chains[dim_chain]:
+                    if all([True if v in face.vertices else False for v in chain[1].vertices]):
+                        boundaries.append(chain[0])
             if len(boundaries) > 0:
                 self.boundary_matrix[i].extend([b for b in boundaries]) 
     
     @staticmethod
     def compute_low(reduced, column):
+        """
+        Compute the low of a column in the reduced matrix as defined in the course. 
+
+        Parameters
+        ----------
+        reduced : list
+            the reduced matrix
+        column : int
+            the idx of the column to compute the low 
+        """
         res = []
         for line in reduced[column]: 
             res.append(line)
@@ -84,12 +89,12 @@ class SparseComputePersistence:
     def gaussian_elimination(self):
         """computes the reduced echelon form of the boundary matrix"""
         reduced = deepcopy(self.boundary_matrix)
-        for column in range(self.number_of_simplices):
+        for column in tqdm(range(self.number_of_simplices)):
             low = self.compute_low(reduced, column) # O(n^2)
             low_j = [
                 self.compute_low(reduced, i)  if i != column  else 0
                 for i in range(self.number_of_simplices)
-            ]
+                ]
             same_pivot = (low_j.index(low) if low in low_j else False)
             while (same_pivot
                    and same_pivot < column):
@@ -109,6 +114,14 @@ class SparseComputePersistence:
         return reduced
     
     def barcode_output(self, reduced):
+        """
+        Output the barcode of the filtration
+        
+        Parameters
+        ----------
+        reduced : list
+            the reduced matrix
+        """
         barcode = []
         for column in range(self.number_of_simplices):
             if len(reduced[column]) == 0:
@@ -123,7 +136,18 @@ class SparseComputePersistence:
     
     @staticmethod
     def plot_barcode(barcode, inf_delta=0.1, name=""):
-        plt.rc("text", usetex=True)
+        """
+        Plots the barcode and saves it. 
+
+        Parameters
+        ----------
+        barcode : list
+            the barcode
+        inf_delta : float, optional
+            the delta for the infinity, by default 0.1
+        name : str, optional
+        """
+        # plt.rc("text", usetex=True)
         plt.rc("font", family="serif")
         fig, axes = plt.subplots(1, 1)
         fig.suptitle("Barcode of the filtration")
@@ -134,7 +158,7 @@ class SparseComputePersistence:
             [interval[2] for interval in barcode if interval[2] != "inf"])
         infinity = (max_death - min_birth) * inf_delta + max_death
         x = [bar[1] for bar in barcode]
-        y = [(bar[2] - bar[1]) if bar[2] != "inf" else (infinity - bar[1]) for bar in barcode]
+        y = [(bar[2] - bar[1]) if bar[2] != "inf" else infinity + max_death - bar[1] for bar in barcode]
         c = [colormap[bar[0]] for bar in barcode]
-        axes.barh(range(len(x)), y, left=x, alpha=0.5, color=c, linewidth=0)
-        plt.savefig(f"{name}_barcode.png")
+        axes.barh(range(len(x)), y, left=x, height=0.3, alpha=0.5, color=c, linewidth=0)
+        plt.savefig(f"TD4/barcode_examples/{name}_barcode.png")
