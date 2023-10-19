@@ -15,3 +15,6 @@ together with its variant ToMATo based on topological persistence.
 ```bash
 pip install -r requirements.txt
 ```
+
+## TD5: Topological Inference
+The goal of this [lab session](https://www.enseignement.polytechnique.fr/informatique/INF556/TD5/index.html) is to use persistent homology to explore a database of images. 
