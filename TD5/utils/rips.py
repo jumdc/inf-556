@@ -1,8 +1,11 @@
+"""Rips class to build a Rips complex from a point cloud"""
+
 import math
 from matplotlib import pyplot as plt
 
 
 class Simplex:
+    """Simplex class"""
     def __init__(self, val, dim, vertices) -> None:
         """
         NB : there is no TreeSet in python, instead use dict which presevre the order of insertion
@@ -20,7 +23,7 @@ class Simplex:
 
 class Point:
     """
-    Point class.
+    Point class. From TD2. 
     Attributes
     ----------
     coords : Tuple
@@ -37,7 +40,7 @@ class Point:
         return f"{res} {str(self.coords[-1])})"
     
     @staticmethod
-    def sqrt_distance(point_a, point_b):
+    def sqrt_distance(point_a, point_b) -> float:
         """
         Computes the square distance between two points
         
@@ -59,8 +62,9 @@ class Point:
     
 
 class Rips:
+    """Rips class"""
     def __init__(self, path) -> None:
-       self.cloud = []
+       self.cloud = self.read_data(path)
        self.complex = []
 
     def read_data(self, file) -> None:

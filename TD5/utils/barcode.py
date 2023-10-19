@@ -1,7 +1,10 @@
+"""Utils to plot the barcode of a filtration"""
+
 from matplotlib import pyplot as plt
 
 @staticmethod
 def plot_barcode(barcode, inf_delta=0.1):
+    """Plot the barcode."""
     plt.rc("text", usetex=True)
     plt.rc("font", family="serif")
     fig, axes = plt.subplots(1, 1)
