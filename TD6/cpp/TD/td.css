@@ -1,0 +1,66 @@
+body {
+  background-color:white;
+  color:black;
+}
+
+h1 {
+  font-size:200%;
+}
+
+.sousTitre {
+  font-size:120%;
+}
+
+h2 {
+  color:#ffa500;
+  font-size:120%;
+  font-variant:small-caps;
+  border-style:dotted;
+  border-color:gray;
+  border-width:2px 0px 2px 0px;
+}
+
+h3 {
+  font-variant:small-caps;
+  color:blue;
+}       
+
+pre {
+        border-style:dotted;
+        border-color:gray;
+        border-width:1px 1px 1px 1px;
+}       
+
+tt {
+        color:gray;
+}
+
+.code{
+
+}
+
+.shell {
+  color: red;
+  text-indent:30px;
+}
+
+.algo {
+  background:#E0FFFF;
+  border-style:dotted;
+  border-color:blue;
+  border-width:1px 1px 1px 1px;
+}       
+
+.output {
+  background:#FFE0FF;
+  border-style:dotted;
+  border-color:blue;
+  border-width:1px 1px 1px 1px;
+}       
+
+ul {
+}
+
+ol {
+  list-style-type:lower-alpha;
+}

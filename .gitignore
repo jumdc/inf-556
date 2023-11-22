@@ -4,3 +4,8 @@ TD4/data/
 *.pyc
 TD4/
 TD5/data/
+*.dgm
+*.off
+*.xyz
+*.txt
+*.zip

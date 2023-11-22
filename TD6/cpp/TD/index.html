@@ -1,0 +1,171 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=ISO-8859-1">
+  <title>TD 6 - Topological Signatures for 3D shapes</title>
+  <link rel="stylesheet" type="text/css" href="td.css">
+</head>
+<body>
+<center>
+<h1>TD 6 - Topological Signatures for 3D shapes</h1>
+<br>
+</center>
+<br>
+<form action="../gotit.php" method="post">
+  <table>
+    <tbody>
+      <tr>
+        <td>Your opinion about today's lecture: </td>
+        <td> Your opinion about the last exercise or lab session:<br>
+        </td>
+      </tr>
+      <tr>
+        <td> <textarea name="opinion" rows="3" cols="60"></textarea></td>
+        <td><textarea name="opTD" rows="3" cols="60"></textarea> </td>
+        <td><input type="submit"> </td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+
+<br>
+
+<p>
+The goal of this lab session is to use persistent homology to derive stable signatures for 3D shape classification.
+</p>
+
+
+<h2>0. Goal & Input</h2>
+
+<p>We aim at classifying the shapes of the <a href="http://faust.is.tue.mpg.de/" target="_blank">FAUST dataset</a>. They are high quality triangulations of human scans
+in different positions. The goal of this session is to cluster these human meshes, each cluster representing a specific position.</p>
+
+
+<table width="1250" border="1">
+<tr>
+<td>
+<img src="images/shape0.jpg" width="240">
+<img src="images/shape1.jpg" width="240">
+<img src="images/shape2.jpg" width="240">
+<img src="images/shape3.jpg" width="240">
+<img src="images/shape4.jpg" width="240">
+</td>
+</tr>
+<tr>
+<td>
+<img src="images/shape5.jpg" width="240">
+<img src="images/shape6.jpg" width="240">
+<img src="images/shape7.jpg" width="240">
+<img src="images/shape8.jpg" width="240">
+<img src="images/shape9.jpg" width="240">
+</td>
+</tr>
+</table>
+
+
+<p>Here are the <a href="data/off/shapes.zip"> triangulations</a>. They are given in the .off format. Each file is of the form:
+<br> <br>
+<tt> OFF </tt> <br>
+<tt> nv nf 0 </tt> <br>
+<tt> x_0 z_0 y_0 </tt> <br>
+<tt> ... </tt> <br>
+<tt> x_{nv-1} z_{nv-1} y_{nv-1} </tt> <br>
+<tt> 3 i_0 j_0 k_0 </tt> <br>
+<tt> ... </tt> <br>
+<tt> 3 i_{nf-1} j_{nf-1} k_{nf-1} </tt> 
+
+<p>where: 
+<ul>
+<li> <tt>OFF</tt> is the standard signature for .off files, </li> 
+<li> <tt>nv</tt> and <tt>nf</tt> are respectively the numbers of vertices and triangles in the mesh, </li> 
+<li> <tt> x_n z_n y_n </tt> are the coordinates of the <i>n</i>th vertex (<b>beware that the <tt>z</tt> coordinate is second, not third</b>), </li>
+<li> <tt> i_m j_m k_m </tt> are the IDs of the three vertices representing the <i>m</i>th triangle. For instance, <tt>3 14 0 5</tt> denotes the triangle that is given by the 14th, 0th and 5th vertices.</li> 
+</ul>
+</p>
+
+<h2>1. Height Filtrations and Barcodes </h2>
+
+We will characterize each shape <i>S</i> by the barcode of its height function <i>h_S</i> (given by the <tt>z</tt> coordinates of its vertices).
+<p> <b> Q1. </b> Compute the <em>lower-star</em> filtration of <i>h_S</i> for every shape <i>S</i> --
+that is, the filtration for which every simplex is assigned the maximum of its vertices values.
+Recall that the height of a vertex is given by its second coordinate (and not the third one) in the .off files.
+Here is our <a href="C++/height_filtration.cpp">solution code</a> in C++ and the corresponding <a href="filtrations/height/filtrations_height.zip">filtrations</a>. </p>
+<p> <b> Q2. </b> Use the code you implemented during TD5 to compute the barcodes of these filtrations.
+Here is our <a href="C++/persistence.cpp">C++ code</a> in case you do not have access to yours, and here are the resulting <a href="barcodes/height/barcodes_height.zip">barcodes</a>.</p> 
+
+<h2>2. Signatures </h2>
+
+<p> <b> Q3. </b> Implement the following mapping procedure, sending each barcode to a vector (called <em>feature vector</em>) in Euclidean space. The procedure takes in a barcode and two parameters:
+<ul>
+<li> <tt>d</tt>, which is the maximal desired homological dimension, </li> 
+<li> <tt>n</tt>, which is the maximal desired number of barcode intervals. </li>
+</ul>
+Then, for each homology dimension <tt>k</tt> up to <tt>d</tt>, the procedure builds a feature vector as follows:
+<ul>
+<li> First, it selects
+the <tt>n</tt> longest intervals in the subset of the barcode
+corresponding to dimension <tt>k</tt>, and it sets the
+first <tt>n</tt> coordinates of the feature vector to be half the
+lengths of these intervals, completing with zeros in case there are not enough intervals. </li>
+<li> Then, it selects the <tt>n(n-1)/2</tt>
+highest entries in the upper triangle of the <i>modified</i> distance matrix (the one in which the entry <i>(i,j)</i> corresponds to the minimum of the distance between the <i>i</i>-th and <i>j</i>-th diagram points and their respective distances to the diagonal in the plane), and it sets them to be the
+next <tt>n(n-1)/2</tt> coordinates of the feature vector, completing with zeros if necessary. Thus, the feature vector has <tt>n(n+1)/2</tt> coordinates in total. </li>
+<li> Finally, the feature vectors for all homological dimensions are concatenated into a single vector of total dimension <tt>(d+1)n(n+1)/2</tt>.</li>
+</ul>
+
+<p> Here is our <a href="C++/barcode2vector.cpp">solution code</a>
+in C++. </p>
+
+<p> <b> Q4. </b> Apply your code to the barcodes obtained from the collection of 3D shapes. Use parameters <tt>d=2</tt> and <tt>n=10</tt> for this. You should obtain one feature vector of dimension <i>3*10*11/2=165</i> per shape. 
+Here are the <a href="matrix_d2_n10_height.dat">vectors</a> bound into a single <i>100x165</i> matrix stored in an ASCII file. </p>
+
+<h2>3. Visualization </h2>
+
+<p> Now that we have feature vectors, we want to perform dimensionality reduction on them for visualization and effective classification. </p>
+
+<p> <b> Q5. </b> Use the code you implemented during TD1 to reduce the dimension to 2 and 3 with PCA. Here is our <a href="PCA.zip">solution code</a> in R. </p>
+<p> <b> Q6. </b> Visualize the data. You should obtain something like this.
+
+<table width="1000">
+<tr>
+<td>
+<a href="images/PCA_height_2D.png"><img src="images/PCA_height_2D.png" width="300"></a>
+<a href="images/PCA_height_3D.png"><img src="images/PCA_height_3D.png" width="350"></a>
+<a href="images/PCA_height_correlations.png"><img src="images/PCA_height_correlations.png" width="300"></a>
+</td>
+</tr>
+</table>
+
+
+<p> Explain why some clusters seem to be mixed together. Can you guess which coordinates in the feature vectors are relevant?</p> 
+
+<h2>4. Other Filtrations </h2>
+
+<p> Now we want to see what happens with other filtrations. We
+provide <a href="filtrations/alphashapes/filtrations_alphashapes.zip">filtrations</a>
+obtained by computing unions of balls with increasing radii.</p>
+
+<p> <b> Q7. </b> Apply the same pipeline to get Euclidean vectors. Here are the <a href="matrix_d2_n10_alphashape.dat">vectors</a> stored in a single ASCII file. </p>
+<p> <b> Q8. </b> Visualize again the dataset in 2D and 3D. You should obtain something like this.</p>
+
+<table width="1000">
+<tr>
+<td>
+<a href="images/PCA_alphashape_2D.png"><img src="images/PCA_alphashape_2D.png" width="300"></a>
+<a href="images/PCA_alphashape_3D.png"><img src="images/PCA_alphashape_3D.png" width="300"></a>
+<a href="images/PCA_alphashape_correlations.png"><img src="images/PCA_alphashape_correlations.png" width="300"></a>
+</td>
+</tr>
+</table>
+
+<p>What are the relevant coordinates in the feature vectors this time? Can you infer what the three clusters correspond to? </p>
+
+<h2>5. (Extension) Clustering </h2>
+
+<p>Try various clustering algorithms (k-means, single-linkage, ToMATo, etc.) on the datasets in 2D or 3D. Which one works best for each dataset? What is the corresponding error rate (relative number of misclassified shapes)? Can you explain the results?
+<p>
+
+
+</body>
+</html>
+
